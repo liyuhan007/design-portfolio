@@ -430,6 +430,15 @@ footer{padding:28px var(--gutter);font-size:12px;color:var(--ink-40);display:fle
 
 <script>
 (function(){
+  // 站内锚点统一用 JS 滚动，避免沙箱/内嵌环境把 #hash 当作整页导航而被拒绝
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
+    var id=a.getAttribute('href').slice(1); var el=id&&document.getElementById(id); if(!el) return;
+    e.preventDefault();
+    var top=el.getBoundingClientRect().top+window.pageYOffset;
+    try{window.scrollTo({top:top,behavior:'smooth'});}catch(_){window.scrollTo(0,top);}
+    try{history.replaceState(null,'','#'+id);}catch(_){}
+  });
   var links=[].slice.call(document.querySelectorAll('.nav a[data-sec]'));
   var slides=[].slice.call(document.querySelectorAll('.slide'));
   var prog=document.getElementById('progress');
